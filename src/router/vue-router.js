@@ -6,7 +6,7 @@
  * @ModifierEmail:
  * @ModifierDescription:
  * @Date: 2020-05-02 17:21:20
- * @LastEditTime: 2020-05-04 03:11:25
+ * @LastEditTime: 2020-05-04 03:32:15
  */
 // 插件其实是一个类，类中必须实现 install 静态方法 才能被 Vue.use() 挂载
 import link from './link'
@@ -32,10 +32,9 @@ class VueRouter {
     Vue = _Vue
 
     VueRouter.mixin()
-
-    Vue.component('router-link', link)
-    Vue.component('router-view', view)
+    VueRouter.createComponent()
   }
+
   // 为什么要⽤混⼊⽅式写？主要原因是use代码在前，Router实例创建在后，⽽install逻辑⼜需要⽤到该实例
   static mixin() {
     Vue.mixin({
@@ -46,6 +45,11 @@ class VueRouter {
         }
       }
     })
+  }
+
+  static createComponent() {
+    Vue.component('router-link', link)
+    Vue.component('router-view', view)
   }
 
   init() {
