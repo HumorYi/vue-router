@@ -6,7 +6,7 @@
  * @ModifierEmail:
  * @ModifierDescription:
  * @Date: 2020-05-02 17:21:20
- * @LastEditTime: 2020-05-03 15:42:26
+ * @LastEditTime: 2020-05-04 03:11:25
  */
 // 插件其实是一个类，类中必须实现 install 静态方法 才能被 Vue.use() 挂载
 import link from './link'
@@ -54,25 +54,28 @@ class VueRouter {
     this.watchUrl()
   }
 
-  verifyRoute(route) {
-    if (this.routeMap.get(route.path)) {
-      throw new Error('路由path：' + route.path + ' 已存在')
+  verifyRoute(path, name) {
+    if (this.routeMap.get(path)) {
+      throw new Error('路由path：' + path + ' 已存在')
     }
 
-    if (this.routeMap.get(route.name)) {
-      throw new Error('路由name：' + route.name + ' 已存在')
+    if (this.routeMap.get(name)) {
+      throw new Error('路由name：' + name + ' 已存在')
     }
   }
 
   setRouteMap(routes, parentPath = '') {
     routes.forEach(route => {
-      this.verifyRoute(route)
+      const path = parentPath + route.path
+      const name = route.name
 
-      this.routeMap.set(parentPath + route.path, route)
-      this.routeMap.set(route.name, route)
+      this.verifyRoute(path, name)
+
+      this.routeMap.set(path, route)
+      this.routeMap.set(name, route)
 
       if (Array.isArray(route.children)) {
-        this.setRouteMap(route.children, parentPath + route.path)
+        this.setRouteMap(route.children, path)
       }
     })
   }

@@ -6,7 +6,7 @@
  * @ModifierEmail:
  * @ModifierDescription:
  * @Date: 2020-05-02 17:21:05
- * @LastEditTime: 2020-05-03 15:35:07
+ * @LastEditTime: 2020-05-04 03:13:28
  */
 import Vue from 'vue'
 import VueRouter from './vue-router'
@@ -31,7 +31,7 @@ const routes = [
           {
             path: '/detail',
             name: 'news-detail',
-            component: NewsDetail,
+            component: NewsDetail
           }
         ]
       }
@@ -41,7 +41,7 @@ const routes = [
     path: '/about',
     name: 'about',
     component: About
-  },
+  }
 ]
 
 const router = new VueRouter({
