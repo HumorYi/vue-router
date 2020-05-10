@@ -6,10 +6,13 @@
  * @ModifierEmail:
  * @ModifierDescription:
  * @Date: 2020-05-03 15:14:13
- * @LastEditTime: 2020-05-03 15:14:31
+ * @LastEditTime: 2020-05-10 18:26:07
 -->
 <template>
-  <div class="news">news</div>
+  <div class="news">
+    news
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>

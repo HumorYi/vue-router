@@ -6,7 +6,7 @@
  * @ModifierEmail:
  * @ModifierDescription:
  * @Date: 2020-05-02 17:21:20
- * @LastEditTime: 2020-05-04 03:32:15
+ * @LastEditTime: 2020-05-10 18:39:17
  */
 // 插件其实是一个类，类中必须实现 install 静态方法 才能被 Vue.use() 挂载
 import link from './link'
@@ -22,10 +22,18 @@ let Vue = null
 class VueRouter {
   constructor(options) {
     this.$options = options
-    this.current = ''
     this.routeMap = new Map()
 
-    this.init()
+    this.setCurrent()
+
+    this.setRouteMap(this.$options.routes)
+
+    // 响应式监听当前实例的 matched 属性，当 url变化时 响应式渲染 对应的 组件
+    Vue.util.defineReactive(this, 'matched', [])
+
+    this.match()
+
+    this.watchUrl()
   }
 
   static install(_Vue) {
@@ -52,10 +60,26 @@ class VueRouter {
     Vue.component('router-view', view)
   }
 
-  init() {
-    this.setRouteMap(this.$options.routes)
-    this.reactive()
-    this.watchUrl()
+  match(routes) {
+    routes = routes || this.$options.routes
+
+    for (const route of routes) {
+      if (route.path === '/' && this.current === '/') {
+        this.matched.push(route)
+        return
+      }
+
+      // route.path => /info    this.current => /about/info
+      if (route.path !== '/' && this.current.includes(route.path)) {
+        this.matched.push(route)
+
+        if (route.children && route.children.length > 0) {
+          this.match(route.children)
+        }
+
+        return
+      }
+    }
   }
 
   verifyRoute(path, name) {
@@ -84,14 +108,10 @@ class VueRouter {
     })
   }
 
-  getComponent() {
-    const route = this.routeMap.get(this.current)
+  getComponent(depth) {
+    // const route = this.routeMap.get(this.current)
+    const route = this.matched[depth]
     return route ? route.component : null
-  }
-
-  reactive() {
-    // 响应式监听当前实例的 current 属性，当 url变化时 响应式渲染 对应的 组件
-    Vue.util.defineReactive(this, 'current')
   }
 
   watchUrl() {
@@ -100,6 +120,12 @@ class VueRouter {
   }
 
   onHashChange() {
+    this.setCurrent()
+    this.matched = []
+    this.match()
+  }
+
+  setCurrent() {
     // 过滤掉 #
     this.current = window.location.hash.slice(1) || '/'
   }

@@ -6,13 +6,12 @@
  * @ModifierEmail:
  * @ModifierDescription:
  * @Date: 2020-05-02 17:21:05
- * @LastEditTime: 2020-05-04 03:13:28
+ * @LastEditTime: 2020-05-10 18:42:12
  */
 import Vue from 'vue'
 import VueRouter from './vue-router'
 import Home from '@/views/Home.vue'
 import News from '@/views/News.vue'
-import NewsDetail from '@/views/NewsDetail.vue'
 import About from '@/views/About.vue'
 
 Vue.use(VueRouter)
@@ -21,26 +20,39 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home,
+    component: Home
+  },
+  {
+    path: '/news',
+    name: 'news',
+    component: News,
     children: [
       {
-        path: 'news',
-        name: 'news',
-        component: News,
-        children: [
-          {
-            path: '/detail',
-            name: 'news-detail',
-            component: NewsDetail
+        path: '/detail',
+        name: 'newsDetail',
+        component: {
+          render(h) {
+            return h('div', 'news detail')
           }
-        ]
+        }
       }
     ]
   },
   {
     path: '/about',
     name: 'about',
-    component: About
+    component: About,
+    children: [
+      {
+        path: '/info',
+        name: 'aboutInfo',
+        component: {
+          render(h) {
+            return h('div', 'about info')
+          }
+        }
+      }
+    ]
   }
 ]
 
